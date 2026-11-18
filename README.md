@@ -1,8 +1,8 @@
 # EnergyX Social
 
-**Multi-channel social media publishing for ERPNext / Frappe v16.**
+**Multi-channel social media publishing for EnergyX 369 ERP.**
 
-EnergyX Social (module name: *Social Posting*) lets a team draft, approve, schedule and publish posts to **Instagram, Facebook Pages, YouTube and TikTok** directly from ERPNext, using each platform's official API. There is no third-party SaaS in between: tokens stay in your own database, encrypted.
+EnergyX Social (module name: *Social Posting*) lets a team draft, approve, schedule and publish posts to **Instagram, Facebook Pages, YouTube and TikTok** directly from EnergyX 369 ERP, using each platform's official API. There is no third-party SaaS in between: tokens stay in your own database, encrypted.
 
 ---
 
@@ -49,17 +49,17 @@ EnergyX Social (module name: *Social Posting*) lets a team draft, approve, sched
 
 ## Requirements
 
-- Frappe Framework and ERPNext **v16** (`>=16.0.0-dev, <17.0.0`)
+- **EnergyX 369 ERP v16** (`>=16.0.0-dev, <17.0.0`), installed with `bench`
 - A running **long** queue worker (included in `bench start`; in production make sure the worker handles the `long` queue)
 - Bench scheduler enabled
 - A **public HTTPS URL** for your site if you publish to Instagram, Facebook (photo/video) or TikTok in URL mode. These platforms download your media from that URL.
 
 ## Installation
 
-From your bench directory:
+From your bench directory (the folder that contains `apps/` and `sites/`):
 
 ```bash
-cd ~/frappe-bench
+cd <your-bench>
 bench get-app https://github.com/Royalless05/energyx_social --branch main
 bench --site your-site.local install-app energyx_social
 bench --site your-site.local migrate
@@ -83,9 +83,9 @@ bench restart
 ### Updating
 
 ```bash
-cd ~/frappe-bench/apps/energyx_social
+cd <your-bench>/apps/energyx_social
 git pull upstream main        # the remote created by bench is named "upstream"
-cd ~/frappe-bench
+cd <your-bench>
 bench --site your-site.local migrate
 bench build --app energyx_social
 bench restart
@@ -181,7 +181,9 @@ With App ID and Secret filled in, the token is renewed automatically when it is 
 1. Use the same Meta app as above, or create a new one.
 2. In the Graph API Explorer generate a user token with: `pages_manage_posts`, `pages_manage_engagement`, `pages_read_engagement`, `pages_show_list`.
 3. Exchange it for a long-lived user token (same URL as in the Instagram section).
-4. Call `GET me/accounts` with the long-lived user token. The response lists each Page with its `id` and its own `access_token`. A Page token obtained this way from a long-lived user token does not expire.
+4. Call `GET me/accounts?fields=id,name,access_token` with the long-lived user token. The response lists each Page with its `id` and its own `access_token`. A Page token obtained this way from a long-lived user token does not expire.
+
+   > **Use the Page token, not the user token.** Posting to a Page with a user token fails with `(#200) The permission(s) publish_actions are not available`. Test Connection can still pass with a user token because reading the Page name is allowed, so check the token in the [Access Token Debugger](https://developers.facebook.com/tools/debug/accesstoken): *Type* must be `Page` and *Scopes* must include `pages_manage_posts`.
 5. Add a row:
 
 | Field | Value |
@@ -343,6 +345,7 @@ Errors are written to the **Error Log** doctype and to the `Error Log` field of 
 | Test Connection says to save first | Save the document so tokens are stored encrypted, then retry |
 | Account stays disabled | Run Test Connection; changing credentials disables the account again |
 | Meta error 190, 10 or 200 | Token expired or missing permissions. Regenerate the token with all required scopes |
+| Facebook `(#200) publish_actions are not available` | A user token was entered instead of the **Page** access token. Get the Page token from `me/accounts` |
 | Instagram media cannot be fetched | Public Base URL is not public, or the image is not JPEG |
 | `instagram_business_account` missing | The Instagram account is not linked to the Page, or is not a professional account |
 | YouTube `invalid_grant` | Refresh token expired (consent screen still in *Testing*) or revoked. Create a new one |
