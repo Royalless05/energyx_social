@@ -1,0 +1,75 @@
+{
+ "doctype": "DocType",
+ "name": "Social Posting Settings",
+ "module": "Social Posting",
+ "owner": "Administrator",
+ "creation": "2026-11-18 08:00:00.000000",
+ "modified": "2026-11-18 08:00:00.000000",
+ "modified_by": "Administrator",
+ "engine": "InnoDB",
+ "field_order": [
+  "accounts_section",
+  "accounts",
+  "media_section",
+  "public_base_url",
+  "tiktok_section",
+  "tiktok_upload_mode",
+  "tiktok_default_privacy"
+ ],
+ "fields": [
+  {
+   "fieldname": "accounts_section",
+   "fieldtype": "Section Break",
+   "label": "Accounts"
+  },
+  {
+   "fieldname": "accounts",
+   "fieldtype": "Table",
+   "label": "Accounts",
+   "options": "Social Account"
+  },
+  {
+   "fieldname": "media_section",
+   "fieldtype": "Section Break",
+   "label": "Media"
+  },
+  {
+   "fieldname": "public_base_url",
+   "fieldtype": "Data",
+   "label": "Public Base URL",
+   "description": "URL publik situs (https) yang bisa diakses Meta/TikTok. Kosong = site URL bawaan."
+  },
+  {
+   "fieldname": "tiktok_section",
+   "fieldtype": "Section Break",
+   "label": "TikTok"
+  },
+  {
+   "fieldname": "tiktok_upload_mode",
+   "fieldtype": "Select",
+   "label": "Tiktok Upload Mode",
+   "options": "FILE_UPLOAD\nPULL_FROM_URL",
+   "default": "FILE_UPLOAD"
+  },
+  {
+   "fieldname": "tiktok_default_privacy",
+   "fieldtype": "Select",
+   "label": "Tiktok Default Privacy",
+   "default": "SELF_ONLY",
+   "options": "PUBLIC_TO_EVERYONE\nMUTUAL_FOLLOW_FRIENDS\nFOLLOWER_OF_CREATOR\nSELF_ONLY",
+   "description": "Klien TikTok yang belum diaudit hanya boleh SELF_ONLY."
+  }
+ ],
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "issingle": 1
+}

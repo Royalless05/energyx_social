@@ -1,0 +1,170 @@
+{
+ "doctype": "DocType",
+ "name": "Social Post",
+ "module": "Social Posting",
+ "owner": "Administrator",
+ "creation": "2026-11-18 08:00:00.000000",
+ "modified": "2026-11-18 08:00:00.000000",
+ "modified_by": "Administrator",
+ "engine": "InnoDB",
+ "field_order": [
+  "title",
+  "status",
+  "campaign_link",
+  "col_1",
+  "default_scheduled_at",
+  "requested_by",
+  "content_section",
+  "base_media",
+  "base_caption",
+  "channels_section",
+  "channels",
+  "approval_section",
+  "approved_by",
+  "approved_on",
+  "analytics_section",
+  "metrics"
+ ],
+ "fields": [
+  {
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "label": "Title",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "read_only": 1,
+   "default": "Draft",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "no_copy": 1,
+   "options": "Draft\nPending Approval\nApproved\nPublishing\nPublished\nPartial\nOn Hold\nCancelled"
+  },
+  {
+   "fieldname": "campaign_link",
+   "fieldtype": "Link",
+   "label": "Campaign",
+   "options": "Campaign"
+  },
+  {
+   "fieldname": "col_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "default_scheduled_at",
+   "fieldtype": "Datetime",
+   "label": "Default Scheduled At"
+  },
+  {
+   "fieldname": "requested_by",
+   "fieldtype": "Data",
+   "label": "Requested By",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "content_section",
+   "fieldtype": "Section Break",
+   "label": "Content"
+  },
+  {
+   "fieldname": "base_media",
+   "fieldtype": "Attach",
+   "label": "Base Media"
+  },
+  {
+   "fieldname": "base_caption",
+   "fieldtype": "Small Text",
+   "label": "Base Caption"
+  },
+  {
+   "fieldname": "channels_section",
+   "fieldtype": "Section Break",
+   "label": "Channels"
+  },
+  {
+   "fieldname": "channels",
+   "fieldtype": "Table",
+   "label": "Channels",
+   "options": "Social Post Channel",
+   "reqd": 1
+  },
+  {
+   "fieldname": "approval_section",
+   "fieldtype": "Section Break",
+   "label": "Approval",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "approved_by",
+   "fieldtype": "Data",
+   "label": "Approved By",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "approved_on",
+   "fieldtype": "Datetime",
+   "label": "Approved On",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "analytics_section",
+   "fieldtype": "Section Break",
+   "label": "Analytics",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "metrics",
+   "fieldtype": "Table",
+   "label": "Metrics",
+   "options": "Social Post Metric",
+   "read_only": 1,
+   "no_copy": 1
+  }
+ ],
+ "permissions": [
+  {
+   "role": "Social Editor",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "report": 1
+  },
+  {
+   "role": "Social Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "report": 1,
+   "export": 1,
+   "share": 1
+  },
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "report": 1,
+   "export": 1,
+   "share": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "autoname": "format:SPOST-{YYYY}-{#####}",
+ "naming_rule": "Expression",
+ "title_field": "title",
+ "track_changes": 1,
+ "search_fields": "title,status",
+ "show_title_field_in_link": 1
+}

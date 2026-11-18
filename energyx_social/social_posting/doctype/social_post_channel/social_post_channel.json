@@ -1,0 +1,181 @@
+{
+ "doctype": "DocType",
+ "name": "Social Post Channel",
+ "module": "Social Posting",
+ "owner": "Administrator",
+ "creation": "2026-11-18 08:00:00.000000",
+ "modified": "2026-11-18 08:00:00.000000",
+ "modified_by": "Administrator",
+ "engine": "InnoDB",
+ "field_order": [
+  "channel",
+  "account",
+  "account_label",
+  "active",
+  "post_format",
+  "status",
+  "content_section",
+  "caption_override",
+  "media_override",
+  "thumbnail",
+  "first_comment",
+  "scheduled_at_override",
+  "result_section",
+  "scheduled_at",
+  "remote_id",
+  "permalink",
+  "published_on",
+  "attempts",
+  "provider_state",
+  "error_log"
+ ],
+ "fields": [
+  {
+   "fieldname": "channel",
+   "fieldtype": "Select",
+   "label": "Channel",
+   "options": "Instagram\nFacebook Page\nYouTube\nTikTok",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 2
+  },
+  {
+   "fieldname": "account",
+   "fieldtype": "Link",
+   "label": "Account",
+   "options": "Social Account",
+   "reqd": 1
+  },
+  {
+   "fieldname": "account_label",
+   "fieldtype": "Data",
+   "label": "Account Label",
+   "read_only": 1,
+   "in_list_view": 1,
+   "columns": 2
+  },
+  {
+   "fieldname": "active",
+   "fieldtype": "Check",
+   "label": "Active",
+   "default": "1",
+   "in_list_view": 1,
+   "columns": 1
+  },
+  {
+   "fieldname": "post_format",
+   "fieldtype": "Select",
+   "label": "Post Format",
+   "options": "\nPost\nReel\nStory\nPhoto\nVideo\nText\nShort",
+   "in_list_view": 1,
+   "columns": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Queued\nScheduled\nPublishing\nPublished\nFailed\nOn Hold\nDeleted",
+   "default": "Queued",
+   "read_only": 1,
+   "in_list_view": 1,
+   "columns": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "content_section",
+   "fieldtype": "Section Break",
+   "label": "Override"
+  },
+  {
+   "fieldname": "caption_override",
+   "fieldtype": "Small Text",
+   "label": "Caption Override"
+  },
+  {
+   "fieldname": "media_override",
+   "fieldtype": "Attach",
+   "label": "Media Override"
+  },
+  {
+   "fieldname": "thumbnail",
+   "fieldtype": "Attach",
+   "label": "Thumbnail",
+   "depends_on": "eval:doc.channel==\"YouTube\""
+  },
+  {
+   "fieldname": "first_comment",
+   "fieldtype": "Small Text",
+   "label": "First Comment",
+   "depends_on": "eval:[\"Instagram\",\"Facebook Page\"].includes(doc.channel)"
+  },
+  {
+   "fieldname": "scheduled_at_override",
+   "fieldtype": "Datetime",
+   "label": "Scheduled At Override"
+  },
+  {
+   "fieldname": "result_section",
+   "fieldtype": "Section Break",
+   "label": "Result"
+  },
+  {
+   "fieldname": "scheduled_at",
+   "fieldtype": "Datetime",
+   "label": "Scheduled At",
+   "read_only": 1,
+   "no_copy": 1,
+   "description": "Jadwal efektif (override atau default)."
+  },
+  {
+   "fieldname": "remote_id",
+   "fieldtype": "Data",
+   "label": "Remote Id",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "permalink",
+   "fieldtype": "Data",
+   "label": "Permalink",
+   "read_only": 1,
+   "no_copy": 1,
+   "options": "URL"
+  },
+  {
+   "fieldname": "published_on",
+   "fieldtype": "Datetime",
+   "label": "Published On",
+   "read_only": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "attempts",
+   "fieldtype": "Int",
+   "label": "Attempts",
+   "read_only": 1,
+   "hidden": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "provider_state",
+   "fieldtype": "Data",
+   "label": "Provider State",
+   "read_only": 1,
+   "hidden": 1,
+   "no_copy": 1
+  },
+  {
+   "fieldname": "error_log",
+   "fieldtype": "Long Text",
+   "label": "Error Log",
+   "read_only": 1,
+   "no_copy": 1
+  }
+ ],
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "istable": 1,
+ "editable_grid": 0
+}
