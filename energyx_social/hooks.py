@@ -7,6 +7,17 @@ app_license = "mit"
 
 required_apps = ["frappe", "erpnext"]  # Campaign dilink dari ERPNext
 
+# Ikon di halaman Apps (Desk v16). Route = slug dari label Workspace.
+add_to_apps_screen = [
+    {
+        "name": "energyx_social",
+        "logo": "/assets/energyx_social/images/logo.svg",
+        "title": "EnergyX Social",
+        "route": "/desk/energyx-social",
+        "has_permission": "energyx_social.api.has_app_permission",
+    }
+]
+
 after_install = "energyx_social.setup.install.after_install"
 after_migrate = "energyx_social.setup.install.after_migrate"
 

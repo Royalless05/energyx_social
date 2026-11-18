@@ -93,3 +93,9 @@ def search_accounts(doctype, txt, searchfield, start, page_len, filters):
         """,
         {"txt": f"%{txt}%", "channel": channel, "start": int(start), "page_len": int(page_len)},
     )
+
+
+def has_app_permission() -> bool:
+    """Tampilkan ikon app di halaman Apps hanya untuk user yang berhak."""
+    allowed = {"System Manager", "Social Manager", "Social Editor"}
+    return bool(allowed & set(frappe.get_roles()))
