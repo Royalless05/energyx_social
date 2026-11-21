@@ -1,0 +1,124 @@
+{
+ "doctype": "DocType",
+ "name": "Social Metric Weekly",
+ "module": "Social Posting",
+ "owner": "Administrator",
+ "creation": "2026-11-21 02:00:00.000000",
+ "modified": "2026-11-21 02:00:00.000000",
+ "modified_by": "Administrator",
+ "engine": "InnoDB",
+ "autoname": "hash",
+ "sort_field": "week_start",
+ "sort_order": "DESC",
+ "field_order": [
+  "post",
+  "week_start",
+  "channel",
+  "account_label",
+  "post_channel",
+  "impressions",
+  "reach",
+  "likes",
+  "comments",
+  "shares",
+  "engagement_rate"
+ ],
+ "fields": [
+  {
+   "fieldname": "post",
+   "fieldtype": "Link",
+   "label": "Social Post",
+   "options": "Social Post",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "week_start",
+   "fieldtype": "Date",
+   "label": "Week Start (Monday)",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "channel",
+   "fieldtype": "Select",
+   "label": "Channel",
+   "options": "Instagram\\nFacebook Page\\nYouTube\\nTikTok\nLinkedIn",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "account_label",
+   "fieldtype": "Data",
+   "label": "Account",
+   "read_only": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "post_channel",
+   "fieldtype": "Data",
+   "label": "Post (Channel Row)",
+   "read_only": 1,
+   "hidden": 1
+  },
+  {
+   "fieldname": "impressions",
+   "fieldtype": "Int",
+   "label": "Impressions",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "reach",
+   "fieldtype": "Int",
+   "label": "Reach",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "likes",
+   "fieldtype": "Int",
+   "label": "Likes",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "comments",
+   "fieldtype": "Int",
+   "label": "Comments",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "shares",
+   "fieldtype": "Int",
+   "label": "Shares",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "engagement_rate",
+   "fieldtype": "Percent",
+   "label": "Engagement Rate",
+   "in_list_view": 1
+  }
+ ],
+ "permissions": [
+  {
+   "role": "Social Editor",
+   "read": 1
+  },
+  {
+   "role": "Social Manager",
+   "read": 1,
+   "export": 1
+  },
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "delete": 1,
+   "export": 1
+  }
+ ]
+}

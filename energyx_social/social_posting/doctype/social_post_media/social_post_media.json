@@ -1,0 +1,35 @@
+{
+ "doctype": "DocType",
+ "name": "Social Post Media",
+ "module": "Social Posting",
+ "owner": "Administrator",
+ "creation": "2026-11-21 13:00:00.000000",
+ "modified": "2026-11-21 13:00:00.000000",
+ "modified_by": "Administrator",
+ "engine": "InnoDB",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "field_order": [
+  "media_asset",
+  "media"
+ ],
+ "fields": [
+  {
+   "fieldname": "media_asset",
+   "fieldtype": "Link",
+   "label": "Media Library Asset",
+   "options": "Social Media Asset",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "media",
+   "fieldtype": "Attach",
+   "label": "Media",
+   "in_list_view": 1,
+   "description": "Gambar/video urutan slide. Pilih dari Media Library atau unggah."
+  }
+ ],
+ "istable": 1,
+ "editable_grid": 1
+}

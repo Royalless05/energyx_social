@@ -4,7 +4,7 @@
  "module": "Social Posting",
  "owner": "Administrator",
  "creation": "2026-11-18 08:00:00.000000",
- "modified": "2026-11-18 08:00:00.000000",
+ "modified": "2026-11-21 02:00:00.000000",
  "modified_by": "Administrator",
  "engine": "InnoDB",
  "field_order": [
@@ -14,7 +14,16 @@
   "public_base_url",
   "tiktok_section",
   "tiktok_upload_mode",
-  "tiktok_default_privacy"
+  "tiktok_default_privacy",
+  "metrics_section",
+  "metrics_window_days",
+  "metrics_row_limit",
+  "dispatch_section",
+  "dispatch_batch_limit",
+  "require_final_approval",
+  "link_tracking_default",
+  "comments_enabled",
+  "comments_window_days"
  ],
  "fields": [
   {
@@ -58,6 +67,64 @@
    "default": "SELF_ONLY",
    "options": "PUBLIC_TO_EVERYONE\nMUTUAL_FOLLOW_FRIENDS\nFOLLOWER_OF_CREATOR\nSELF_ONLY",
    "description": "Klien TikTok yang belum diaudit hanya boleh SELF_ONLY."
+  },
+  {
+   "fieldname": "metrics_section",
+   "fieldtype": "Section Break",
+   "label": "Metrics"
+  },
+  {
+   "fieldname": "metrics_window_days",
+   "fieldtype": "Int",
+   "label": "Metrics Window (days)",
+   "default": "90",
+   "description": "Postingan yang terbit dalam N hari terakhir ikut ditarik metriknya tiap hari."
+  },
+  {
+   "fieldname": "metrics_row_limit",
+   "fieldtype": "Int",
+   "label": "Metrics Max Posts per Run",
+   "default": "1000",
+   "description": "Batas jumlah baris kanal yang diproses per hari (menjaga kuota API)."
+  },
+  {
+   "fieldname": "dispatch_section",
+   "fieldtype": "Section Break",
+   "label": "Publishing & Inbox"
+  },
+  {
+   "fieldname": "dispatch_batch_limit",
+   "fieldtype": "Int",
+   "label": "Dispatch Batch Limit",
+   "default": "25",
+   "description": "Maks kanal yang diambil per 5 menit (1-200). Naikkan untuk penjadwalan massal; pastikan worker 'long' cukup."
+  },
+  {
+   "fieldname": "require_final_approval",
+   "fieldtype": "Check",
+   "label": "Require Final Approval",
+   "default": "0",
+   "description": "Aktif = approval dua tingkat (Social Manager lalu Social Final Approver). Berlaku untuk postingan baru."
+  },
+  {
+   "fieldname": "link_tracking_default",
+   "fieldtype": "Select",
+   "label": "Default Link Tracking",
+   "options": "None\nUTM only\nUTM + Short link",
+   "default": "None"
+  },
+  {
+   "fieldname": "comments_enabled",
+   "fieldtype": "Check",
+   "label": "Pull Comments Hourly",
+   "default": "1"
+  },
+  {
+   "fieldname": "comments_window_days",
+   "fieldtype": "Int",
+   "label": "Comments Window (days)",
+   "default": "14",
+   "description": "Hanya postingan yang terbit dalam N hari terakhir."
   }
  ],
  "permissions": [

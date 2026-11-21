@@ -10,14 +10,19 @@ from energyx_social.services.publisher import (
 )
 from energyx_social.social_posting.doctype.social_post_metric.social_post_metric import compute_engagement_rate
 
-BATCH_LIMIT = 10
+BATCH_LIMIT = 25  # default; bisa diubah di Social Posting Settings (1-200)
 STALE_MINUTES = 30
 TOKEN_RENEW_DAYS = 10
-METRICS_WINDOW_DAYS = 30
-METRICS_ROW_LIMIT = 500
+METRICS_WINDOW_DAYS = 90  # default; bisa diubah di Social Posting Settings
+METRICS_ROW_LIMIT = 1000
 
 
 # ---------------------------------------------------------------------- tiap 5 menit
+def _batch_limit() -> int:
+    value = frappe.db.get_single_value("Social Posting Settings", "dispatch_batch_limit")
+    return min(max(int(value or BATCH_LIMIT), 1), 200)
+
+
 def dispatch_due_posts():
     _recover_stale()
     due = frappe.db.sql(
@@ -30,7 +35,7 @@ def dispatch_due_posts():
         order by c.scheduled_at asc
         limit %(limit)s
         """,
-        {"now": now_datetime(), "phase": PUBLISH_PHASE, "limit": BATCH_LIMIT},
+        {"now": now_datetime(), "phase": PUBLISH_PHASE, "limit": _batch_limit()},
         as_dict=True,
     )
     for item in due:
@@ -91,12 +96,19 @@ def _notify_admins(subject, message):
             pass
 
 
+def _metrics_settings():
+    window = frappe.db.get_single_value("Social Posting Settings", "metrics_window_days")
+    limit = frappe.db.get_single_value("Social Posting Settings", "metrics_row_limit")
+    return max(int(window or METRICS_WINDOW_DAYS), 1), max(int(limit or METRICS_ROW_LIMIT), 1)
+
+
 def pull_metrics():
-    since = add_days(now_datetime(), -METRICS_WINDOW_DAYS)
+    window, row_limit = _metrics_settings()
+    since = add_days(now_datetime(), -window)
     rows = frappe.get_all(ROW, filters={"status": "Published", "published_on": [">=", since],
                                         "remote_id": ["is", "set"], "parenttype": "Social Post"},
-                          fields=["name", "parent", "channel", "account", "post_format", "remote_id"],
-                          order_by="published_on desc", limit=METRICS_ROW_LIMIT)
+                          fields=["name", "parent", "channel", "account", "account_label", "post_format", "remote_id"],
+                          order_by="published_on desc", limit=row_limit)
     today = getdate()
     providers = {}
     for row in rows:
@@ -109,7 +121,8 @@ def pull_metrics():
             secrets = provider.account.secrets
             metrics = provider.fetch_metrics(row.remote_id, row.post_format)
             if metrics:
-                _upsert_metric(row, today, metrics)
+                values = _upsert_metric(row, today, metrics)
+                _upsert_weekly(row, today, values)
             frappe.db.commit()
         except Exception as exc:
             frappe.db.rollback()
@@ -125,9 +138,35 @@ def _upsert_metric(row, day, m):
         "parent": row.parent, "parenttype": "Social Post", "post_channel": row.name, "date": day})
     if existing:
         frappe.db.set_value("Social Post Metric", existing, values, update_modified=False)
-        return
+        return values
     idx = frappe.db.count("Social Post Metric", {"parent": row.parent, "parenttype": "Social Post"}) + 1
     frappe.get_doc({
         "doctype": "Social Post Metric", "parent": row.parent, "parenttype": "Social Post", "parentfield": "metrics",
         "idx": idx, "date": day, "channel": row.channel, "post_channel": row.name, **values,
     }).insert(ignore_permissions=True)
+    return values
+
+
+def _upsert_weekly(row, day, values):
+    """Rekap mingguan (Senin-Minggu): satu baris per kanal per minggu berisi angka terbaru minggu itu.
+    Metrik platform bersifat kumulatif, jadi snapshot terakhir sepanjang minggu = nilai akhir minggu."""
+    week_start = add_days(day, -getdate(day).weekday())
+    existing = frappe.db.get_value("Social Metric Weekly", {"post_channel": row.name, "week_start": week_start})
+    if existing:
+        frappe.db.set_value("Social Metric Weekly", existing, values, update_modified=False)
+        return
+    frappe.get_doc({
+        "doctype": "Social Metric Weekly", "post": row.parent, "post_channel": row.name, "week_start": week_start,
+        "channel": row.channel, "account_label": row.get("account_label") or "", **values,
+    }).insert(ignore_permissions=True)
+
+
+# ---------------------------------------------------------------------- tiap jam
+def pull_comments():
+    from energyx_social.services.comments import pull_all
+    pull_all()
+
+
+def create_recurring_posts():
+    from energyx_social.services.recurring import create_due
+    create_due()

@@ -4,7 +4,7 @@
  "module": "Social Posting",
  "owner": "Administrator",
  "creation": "2026-11-18 08:00:00.000000",
- "modified": "2026-11-18 08:00:00.000000",
+ "modified": "2026-11-21 02:00:00.000000",
  "modified_by": "Administrator",
  "engine": "InnoDB",
  "field_order": [
@@ -16,12 +16,26 @@
   "requested_by",
   "content_section",
   "base_media",
+  "media_asset",
   "base_caption",
+  "media_items_section",
+  "media_items",
   "channels_section",
   "channels",
+  "preview_section",
+  "preview_html",
   "approval_section",
   "approved_by",
   "approved_on",
+  "final_approved_by",
+  "final_approved_on",
+  "needs_final_approval",
+  "revision_section",
+  "revision_notes",
+  "tracking_section",
+  "link_tracking",
+  "utm_campaign",
+  "recurring_source",
   "analytics_section",
   "metrics"
  ],
@@ -43,7 +57,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "no_copy": 1,
-   "options": "Draft\nPending Approval\nApproved\nPublishing\nPublished\nPartial\nOn Hold\nCancelled"
+   "options": "Draft\nPending Approval\nPending Final Approval\nApproved\nPublishing\nPublished\nPartial\nOn Hold\nCancelled"
   },
   {
    "fieldname": "campaign_link",
@@ -127,6 +141,94 @@
    "options": "Social Post Metric",
    "read_only": 1,
    "no_copy": 1
+  },
+  {
+   "fieldname": "preview_section",
+   "fieldtype": "Section Break",
+   "label": "Preview"
+  },
+  {
+   "fieldname": "preview_html",
+   "fieldtype": "HTML",
+   "label": "Preview"
+  },
+  {
+   "fieldname": "media_asset",
+   "fieldtype": "Link",
+   "label": "Pick from Media Library",
+   "options": "Social Media Asset"
+  },
+  {
+   "fieldname": "media_items_section",
+   "fieldtype": "Section Break",
+   "label": "Carousel / Album Media",
+   "collapsible": 1,
+   "description": "Dipakai hanya untuk format Carousel (Instagram) dan Album (Facebook Page): 2-10 gambar/video berurutan."
+  },
+  {
+   "fieldname": "media_items",
+   "fieldtype": "Table",
+   "label": "Slides",
+   "options": "Social Post Media"
+  },
+  {
+   "fieldname": "final_approved_by",
+   "fieldtype": "Data",
+   "label": "Final Approved By",
+   "read_only": 1
+  },
+  {
+   "fieldname": "final_approved_on",
+   "fieldtype": "Datetime",
+   "label": "Final Approved On",
+   "read_only": 1
+  },
+  {
+   "fieldname": "needs_final_approval",
+   "fieldtype": "Check",
+   "label": "Needs Final Approval",
+   "read_only": 1,
+   "hidden": 1
+  },
+  {
+   "fieldname": "revision_section",
+   "fieldtype": "Section Break",
+   "label": "Revision Notes",
+   "collapsible": 1,
+   "description": "Catatan revisi terstruktur dari reviewer. Selesaikan semua catatan sebelum mengajukan ulang."
+  },
+  {
+   "fieldname": "revision_notes",
+   "fieldtype": "Table",
+   "label": "Revision Notes",
+   "options": "Social Revision Note"
+  },
+  {
+   "fieldname": "tracking_section",
+   "fieldtype": "Section Break",
+   "label": "Link Tracking",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "link_tracking",
+   "fieldtype": "Select",
+   "label": "Link Tracking",
+   "options": "Default\nNone\nUTM only\nUTM + Short link",
+   "default": "Default",
+   "description": "Link di caption ditulis ulang saat terbit. Default = ikuti Social Posting Settings."
+  },
+  {
+   "fieldname": "utm_campaign",
+   "fieldtype": "Data",
+   "label": "UTM Campaign",
+   "description": "Kosong = nama Campaign atau judul postingan."
+  },
+  {
+   "fieldname": "recurring_source",
+   "fieldtype": "Link",
+   "label": "Recurring Source",
+   "options": "Social Recurring Post",
+   "read_only": 1
   }
  ],
  "permissions": [
@@ -156,6 +258,12 @@
    "report": 1,
    "export": 1,
    "share": 1
+  },
+  {
+   "role": "Social Final Approver",
+   "read": 1,
+   "write": 1,
+   "report": 1
   }
  ],
  "sort_field": "modified",

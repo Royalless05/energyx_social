@@ -1,0 +1,58 @@
+{
+ "doctype": "DocType",
+ "name": "Social Recurring Channel",
+ "module": "Social Posting",
+ "owner": "Administrator",
+ "creation": "2026-11-21 13:00:00.000000",
+ "modified": "2026-11-21 13:00:00.000000",
+ "modified_by": "Administrator",
+ "engine": "InnoDB",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "field_order": [
+  "channel",
+  "account",
+  "post_format",
+  "hashtag_template",
+  "caption_override"
+ ],
+ "fields": [
+  {
+   "fieldname": "channel",
+   "fieldtype": "Select",
+   "label": "Channel",
+   "options": "Instagram\nFacebook Page\nYouTube\nTikTok\nLinkedIn",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "account",
+   "fieldtype": "Link",
+   "label": "Account",
+   "options": "Social Account",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "post_format",
+   "fieldtype": "Select",
+   "label": "Format",
+   "options": "\nPost\nReel\nStory\nPhoto\nVideo\nText\nShort\nCarousel\nAlbum",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "hashtag_template",
+   "fieldtype": "Link",
+   "label": "Hashtag Template",
+   "options": "Social Hashtag Template"
+  },
+  {
+   "fieldname": "caption_override",
+   "fieldtype": "Small Text",
+   "label": "Caption Override"
+  }
+ ],
+ "istable": 1,
+ "editable_grid": 1
+}

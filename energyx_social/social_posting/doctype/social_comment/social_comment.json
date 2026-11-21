@@ -1,0 +1,201 @@
+{
+ "doctype": "DocType",
+ "name": "Social Comment",
+ "module": "Social Posting",
+ "owner": "Administrator",
+ "creation": "2026-11-21 13:00:00.000000",
+ "modified": "2026-11-21 13:00:00.000000",
+ "modified_by": "Administrator",
+ "engine": "InnoDB",
+ "sort_field": "commented_on",
+ "sort_order": "DESC",
+ "states": [],
+ "field_order": [
+  "status",
+  "channel",
+  "account",
+  "account_label",
+  "col_1",
+  "post",
+  "post_channel",
+  "commented_on",
+  "comment_section",
+  "author_name",
+  "text",
+  "remote_comment_id",
+  "parent_comment_id",
+  "permalink",
+  "reply_section",
+  "reply_text",
+  "col_2",
+  "replied_by",
+  "replied_on",
+  "reply_remote_id"
+ ],
+ "fields": [
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "New\nReplied\nIgnored",
+   "default": "New",
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "channel",
+   "fieldtype": "Select",
+   "label": "Channel",
+   "options": "Instagram\nFacebook Page\nYouTube\nTikTok\nLinkedIn",
+   "read_only": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "account",
+   "fieldtype": "Link",
+   "label": "Account",
+   "options": "Social Account",
+   "read_only": 1
+  },
+  {
+   "fieldname": "account_label",
+   "fieldtype": "Data",
+   "label": "Account Name",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "col_1",
+   "fieldtype": "Column Break",
+   "label": " "
+  },
+  {
+   "fieldname": "post",
+   "fieldtype": "Link",
+   "label": "Social Post",
+   "options": "Social Post",
+   "read_only": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "post_channel",
+   "fieldtype": "Data",
+   "label": "Post Channel Row",
+   "read_only": 1,
+   "hidden": 1
+  },
+  {
+   "fieldname": "commented_on",
+   "fieldtype": "Datetime",
+   "label": "Commented On",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "comment_section",
+   "fieldtype": "Section Break",
+   "label": "Comment"
+  },
+  {
+   "fieldname": "author_name",
+   "fieldtype": "Data",
+   "label": "Author",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "text",
+   "fieldtype": "Small Text",
+   "label": "Comment",
+   "read_only": 1
+  },
+  {
+   "fieldname": "remote_comment_id",
+   "fieldtype": "Data",
+   "label": "Remote Comment ID",
+   "read_only": 1,
+   "unique": 1,
+   "hidden": 1
+  },
+  {
+   "fieldname": "parent_comment_id",
+   "fieldtype": "Data",
+   "label": "Parent Comment ID",
+   "read_only": 1,
+   "hidden": 1
+  },
+  {
+   "fieldname": "permalink",
+   "fieldtype": "Data",
+   "label": "Link",
+   "options": "URL",
+   "read_only": 1
+  },
+  {
+   "fieldname": "reply_section",
+   "fieldtype": "Section Break",
+   "label": "Reply"
+  },
+  {
+   "fieldname": "reply_text",
+   "fieldtype": "Small Text",
+   "label": "Reply Text",
+   "read_only": 1
+  },
+  {
+   "fieldname": "col_2",
+   "fieldtype": "Column Break",
+   "label": " "
+  },
+  {
+   "fieldname": "replied_by",
+   "fieldtype": "Link",
+   "label": "Replied By",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "replied_on",
+   "fieldtype": "Datetime",
+   "label": "Replied On",
+   "read_only": 1
+  },
+  {
+   "fieldname": "reply_remote_id",
+   "fieldtype": "Data",
+   "label": "Reply Remote ID",
+   "read_only": 1,
+   "hidden": 1
+  }
+ ],
+ "permissions": [
+  {
+   "role": "Social Editor",
+   "read": 1,
+   "write": 1,
+   "report": 1
+  },
+  {
+   "role": "Social Manager",
+   "read": 1,
+   "write": 1,
+   "delete": 1,
+   "report": 1,
+   "export": 1
+  },
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "delete": 1,
+   "report": 1,
+   "export": 1
+  }
+ ],
+ "track_changes": 1,
+ "autoname": "hash",
+ "title_field": "author_name",
+ "search_fields": "author_name,text,post"
+}

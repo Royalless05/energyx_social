@@ -7,7 +7,8 @@ from frappe.utils import add_to_date, now_datetime
 
 from energyx_social.services.credentials import Account
 from energyx_social.services.errors import PermanentError, SocialError, redact
-from energyx_social.services.media import MediaService, requires_media
+from energyx_social.services.links import resolve_mode, track_text
+from energyx_social.services.media import MediaService, multi_limits, requires_media
 from energyx_social.services.providers import get_provider
 from energyx_social.services.providers.base import PublishContext
 
@@ -66,7 +67,8 @@ def publish_channel(post: str, row: str):
     if data.status != "Publishing":
         return
 
-    parent = frappe.db.get_value(POST, post, ["status", "title", "base_caption", "base_media"], as_dict=True)
+    parent = frappe.db.get_value(POST, post, ["status", "title", "base_caption", "base_media", "link_tracking", "utm_campaign", "campaign_link"],
+        as_dict=True)
     if parent.status not in PUBLISH_PHASE:  # di-hold / dibatalkan setelah diklaim
         frappe.db.set_value(ROW, row, "status", "Scheduled" if parent.status == "On Hold" else "Queued")
         frappe.db.commit()
@@ -89,17 +91,27 @@ def publish_channel(post: str, row: str):
         source = data.media_override or parent.base_media
         with contextlib.ExitStack() as stack:
             svc = MediaService()
-            media = None
-            if requires_media(data.channel, data.post_format):
+            media, items = None, []
+            if multi_limits(data.channel, data.post_format):
+                sources = frappe.get_all("Social Post Media", filters={"parent": post, "parenttype": "Social Post"},
+                                         pluck="media", order_by="idx asc")
+                req = provider.media_requirements(data.post_format)
+                items = [stack.enter_context(svc.prepared(src, data.channel, data.post_format, **req)) for src in sources if src]
+            elif requires_media(data.channel, data.post_format):
                 media = stack.enter_context(
                     svc.prepared(source, data.channel, data.post_format, **provider.media_requirements(data.post_format)))
             thumb = None
             if data.thumbnail and data.channel == "YouTube":
                 thumb = stack.enter_context(svc.prepared(data.thumbnail, "YouTube", "Thumbnail", local=True))
+            mode = resolve_mode(parent.link_tracking, frappe.db.get_single_value("Social Posting Settings", "link_tracking_default"))
+            track = lambda text: track_text(  # noqa: E731
+                text, post=post, channel=data.channel, post_format=data.post_format, title=parent.title or "",
+                mode=mode, campaign_link=parent.campaign_link, utm_campaign=parent.utm_campaign)
             ctx = PublishContext(
-                post=post, row=row, title=parent.title or "", caption=data.caption_override or parent.base_caption or "",
-                post_format=data.post_format, first_comment=data.first_comment or "", media=media, thumbnail=thumb,
-                provider_state=data.provider_state or "", save_state=save_state,
+                post=post, row=row, title=parent.title or "",
+                caption=track(data.caption_override or parent.base_caption or ""),
+                post_format=data.post_format, first_comment=track(data.first_comment or ""), media=media, thumbnail=thumb,
+                provider_state=data.provider_state or "", save_state=save_state, media_items=items,
             )
             result = provider.publish(ctx)
 
@@ -139,6 +151,9 @@ def _handle_failure(post, row, data, exc, secrets, unexpected=False):
         values["status"] = "Failed"
     frappe.db.set_value(ROW, row, values)
     update_parent_status(post)
+    if not retry:
+        from energyx_social.notifications import notify_channel_failed
+        notify_channel_failed(post, data.channel, redact(message, secrets))
     frappe.db.commit()
     frappe.log_error(
         title=f"Social Posting: {data.channel} gagal ({post})"[:140],
@@ -173,6 +188,9 @@ def update_parent_status(post: str):
         new = "Approved"
     if new != current:
         frappe.db.set_value(POST, post, "status", new)
+        if new in ("Published", "Partial"):
+            from energyx_social.notifications import notify_publish_result
+            notify_publish_result(post, new)
 
 
 # ---------------------------------------------------------------------- remove from platform

@@ -30,7 +30,7 @@
    "fieldname": "channel",
    "fieldtype": "Select",
    "label": "Channel",
-   "options": "Instagram\nFacebook Page\nYouTube\nTikTok",
+   "options": "Instagram\nFacebook Page\nYouTube\nTikTok\nLinkedIn",
    "reqd": 1,
    "in_list_view": 1,
    "columns": 2
@@ -48,7 +48,7 @@
    "fieldtype": "Data",
    "label": "Account / Page / Channel ID",
    "reqd": 1,
-   "description": "IG: Instagram Business Account ID. FB: Page ID. YouTube: Channel ID (UC...). TikTok: open_id."
+   "description": "IG: Instagram Business Account ID. FB: Page ID. YouTube: Channel ID (UC...). TikTok: open_id. LinkedIn: URN lengkap, mis. urn:li:organization:12345 atau urn:li:person:AbC123."
   },
   {
    "fieldname": "enabled",
@@ -107,8 +107,8 @@
    "fieldname": "refresh_token",
    "fieldtype": "Password",
    "label": "Refresh Token",
-   "depends_on": "eval:[\"YouTube\",\"TikTok\"].includes(doc.channel)",
-   "description": "YouTube (wajib) dan TikTok (untuk refresh harian)."
+   "depends_on": "eval:[\"YouTube\",\"TikTok\",\"LinkedIn\"].includes(doc.channel)",
+   "description": "YouTube (wajib), TikTok dan LinkedIn (opsional; LinkedIn hanya bila app Anda disetujui untuk refresh token)."
   },
   {
    "fieldname": "options_section",
@@ -120,7 +120,8 @@
    "fieldtype": "Data",
    "label": "Api Version",
    "default": "graph.facebook.com/v21.0",
-   "depends_on": "eval:[\"Instagram\",\"Facebook Page\"].includes(doc.channel)"
+   "depends_on": "eval:[\"Instagram\",\"Facebook Page\",\"LinkedIn\"].includes(doc.channel)",
+   "description": "Meta: host+versi, mis. graph.facebook.com/v21.0. LinkedIn: versi API format YYYYMM, mis. 202610 (kosong = bawaan)."
   },
   {
    "fieldname": "playlist_id",

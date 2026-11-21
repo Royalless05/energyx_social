@@ -4,7 +4,7 @@
  "module": "Social Posting",
  "owner": "Administrator",
  "creation": "2026-11-18 08:00:00.000000",
- "modified": "2026-11-18 08:00:00.000000",
+ "modified": "2026-11-21 02:00:00.000000",
  "modified_by": "Administrator",
  "engine": "InnoDB",
  "field_order": [
@@ -15,8 +15,10 @@
   "post_format",
   "status",
   "content_section",
+  "hashtag_template",
   "caption_override",
   "media_override",
+  "media_asset",
   "thumbnail",
   "first_comment",
   "scheduled_at_override",
@@ -34,7 +36,7 @@
    "fieldname": "channel",
    "fieldtype": "Select",
    "label": "Channel",
-   "options": "Instagram\nFacebook Page\nYouTube\nTikTok",
+   "options": "Instagram\nFacebook Page\nYouTube\nTikTok\nLinkedIn",
    "reqd": 1,
    "in_list_view": 1,
    "columns": 2
@@ -66,7 +68,7 @@
    "fieldname": "post_format",
    "fieldtype": "Select",
    "label": "Post Format",
-   "options": "\nPost\nReel\nStory\nPhoto\nVideo\nText\nShort",
+   "options": "\nPost\nReel\nStory\nPhoto\nVideo\nText\nShort\nCarousel\nAlbum",
    "in_list_view": 1,
    "columns": 1
   },
@@ -170,6 +172,19 @@
    "label": "Error Log",
    "read_only": 1,
    "no_copy": 1
+  },
+  {
+   "fieldname": "hashtag_template",
+   "fieldtype": "Link",
+   "label": "Hashtag Template",
+   "options": "Social Hashtag Template",
+   "description": "Memilih template menambahkan hashtag ke Caption Override."
+  },
+  {
+   "fieldname": "media_asset",
+   "fieldtype": "Link",
+   "label": "Media Library Asset",
+   "options": "Social Media Asset"
   }
  ],
  "permissions": [],

@@ -30,7 +30,7 @@
    "fieldname": "channel",
    "fieldtype": "Select",
    "label": "Channel",
-   "options": "Instagram\nFacebook Page\nYouTube\nTikTok",
+   "options": "Instagram\nFacebook Page\nYouTube\nTikTok\nLinkedIn",
    "in_list_view": 1
   },
   {

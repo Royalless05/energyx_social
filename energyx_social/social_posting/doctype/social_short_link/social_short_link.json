@@ -1,0 +1,137 @@
+{
+ "doctype": "DocType",
+ "name": "Social Short Link",
+ "module": "Social Posting",
+ "owner": "Administrator",
+ "creation": "2026-11-21 13:00:00.000000",
+ "modified": "2026-11-21 13:00:00.000000",
+ "modified_by": "Administrator",
+ "engine": "InnoDB",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "field_order": [
+  "code",
+  "target_url",
+  "enabled",
+  "expires_on",
+  "col_1",
+  "post",
+  "channel",
+  "clicks",
+  "last_clicked_on",
+  "sec_short",
+  "short_url",
+  "destination"
+ ],
+ "fields": [
+  {
+   "fieldname": "code",
+   "fieldtype": "Data",
+   "label": "Code",
+   "unique": 1,
+   "in_list_view": 1,
+   "description": "Kosong = dibuat otomatis. Alamat pendek: <situs>/s/<code>"
+  },
+  {
+   "fieldname": "target_url",
+   "fieldtype": "Data",
+   "label": "Target URL",
+   "options": "URL",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "Enabled",
+   "default": "1"
+  },
+  {
+   "fieldname": "expires_on",
+   "fieldtype": "Date",
+   "label": "Expires On"
+  },
+  {
+   "fieldname": "col_1",
+   "fieldtype": "Column Break",
+   "label": " "
+  },
+  {
+   "fieldname": "post",
+   "fieldtype": "Link",
+   "label": "Social Post",
+   "options": "Social Post",
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "channel",
+   "fieldtype": "Data",
+   "label": "Channel",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "clicks",
+   "fieldtype": "Int",
+   "label": "Clicks",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "last_clicked_on",
+   "fieldtype": "Datetime",
+   "label": "Last Clicked",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sec_short",
+   "fieldtype": "Section Break",
+   "label": "Short URL"
+  },
+  {
+   "fieldname": "short_url",
+   "fieldtype": "Data",
+   "label": "Short URL",
+   "read_only": 1,
+   "options": "URL"
+  },
+  {
+   "fieldname": "destination",
+   "fieldtype": "Small Text",
+   "label": "Final URL (with UTM)",
+   "read_only": 1
+  }
+ ],
+ "permissions": [
+  {
+   "role": "Social Editor",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "report": 1
+  },
+  {
+   "role": "Social Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "report": 1,
+   "export": 1
+  },
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "report": 1,
+   "export": 1
+  }
+ ],
+ "track_changes": 1,
+ "autoname": "hash",
+ "title_field": "code",
+ "search_fields": "code,target_url,post"
+}

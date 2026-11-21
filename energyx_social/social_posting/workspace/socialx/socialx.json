@@ -1,0 +1,202 @@
+{
+ "charts": [],
+ "content": "[{\"id\": \"hdr1\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>SocialX</b></span>\", \"col\": 12}}, {\"id\": \"sc1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Social Post\", \"col\": 3}}, {\"id\": \"sc2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Content Calendar\", \"col\": 3}}, {\"id\": \"sc3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Comment Inbox\", \"col\": 3}}, {\"id\": \"sc4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Social Analytics\", \"col\": 3}}, {\"id\": \"sc5\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Media Library\", \"col\": 3}}, {\"id\": \"sc6\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Recurring Posts\", \"col\": 3}}, {\"id\": \"sc7\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Hashtag Templates\", \"col\": 3}}, {\"id\": \"sc8\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Social Posting Settings\", \"col\": 3}}, {\"id\": \"sp1\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"hdr2\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Menu</b></span>\", \"col\": 12}}, {\"id\": \"card1\", \"type\": \"card\", \"data\": {\"card_name\": \"Posting\", \"col\": 3}}, {\"id\": \"card2\", \"type\": \"card\", \"data\": {\"card_name\": \"Library & Links\", \"col\": 3}}, {\"id\": \"card3\", \"type\": \"card\", \"data\": {\"card_name\": \"Engagement\", \"col\": 3}}, {\"id\": \"card4\", \"type\": \"card\", \"data\": {\"card_name\": \"Insights\", \"col\": 3}}]",
+ "creation": "2026-11-18 10:00:00.000000",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "share",
+ "idx": 0,
+ "indicator_color": "pink",
+ "is_hidden": 0,
+ "label": "SocialX",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Posting",
+   "link_count": 0,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Social Post",
+   "link_count": 0,
+   "link_to": "Social Post",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Social Hashtag Template",
+   "link_count": 0,
+   "link_to": "Social Hashtag Template",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Social Recurring Post",
+   "link_count": 0,
+   "link_to": "Social Recurring Post",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Social Posting Settings",
+   "link_count": 0,
+   "link_to": "Social Posting Settings",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Library & Links",
+   "link_count": 0,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Social Media Asset",
+   "link_count": 0,
+   "link_to": "Social Media Asset",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Social Short Link",
+   "link_count": 0,
+   "link_to": "Social Short Link",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Engagement",
+   "link_count": 0,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Social Comment",
+   "link_count": 0,
+   "link_to": "Social Comment",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Insights",
+   "link_count": 0,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Social Analytics",
+   "link_count": 0,
+   "link_to": "Social Analytics",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Social Metric Weekly",
+   "link_count": 0,
+   "link_to": "Social Metric Weekly",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-11-21 13:30:00.000000",
+ "modified_by": "Administrator",
+ "module": "Social Posting",
+ "name": "SocialX",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [],
+ "sequence_id": 50,
+ "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Social Post",
+   "link_to": "Social Post",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "Calendar",
+   "label": "Content Calendar",
+   "link_to": "Social Post",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "List",
+   "label": "Comment Inbox",
+   "link_to": "Social Comment",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "",
+   "label": "Social Analytics",
+   "link_to": "Social Analytics",
+   "type": "Report"
+  },
+  {
+   "doc_view": "List",
+   "label": "Media Library",
+   "link_to": "Social Media Asset",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "List",
+   "label": "Recurring Posts",
+   "link_to": "Social Recurring Post",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "List",
+   "label": "Hashtag Templates",
+   "link_to": "Social Hashtag Template",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "",
+   "label": "Social Posting Settings",
+   "link_to": "Social Posting Settings",
+   "type": "DocType"
+  }
+ ],
+ "title": "SocialX"
+}

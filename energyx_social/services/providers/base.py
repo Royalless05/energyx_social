@@ -20,6 +20,7 @@ class PublishContext:
     media: object = None          # MediaInfo | None
     thumbnail: object = None      # MediaInfo | None
     provider_state: str = ""
+    media_items: list = field(default_factory=list)  # list MediaInfo untuk Carousel/Album
     save_state: Callable[[str], None] = lambda value: None  # checkpoint idempotensi (di-commit)
 
 
@@ -58,6 +59,14 @@ class BaseProvider:
 
     def fetch_metrics(self, remote_id: str, post_format: str) -> dict:
         return {}
+
+    # ---- komentar (Inbox). Provider yang tidak mendukung biarkan default.
+    def fetch_comments(self, remote_id: str, post_format: str) -> list:
+        """list of dict: id, text, author, author_id, created (datetime/str), parent_id."""
+        raise UnsupportedOperation(f"{self.account.channel} tidak mendukung pengambilan komentar lewat API.")
+
+    def reply_comment(self, remote_id: str, comment_id: str, text: str) -> str:
+        raise UnsupportedOperation(f"{self.account.channel} tidak mendukung balasan komentar lewat API.")
 
     # ---- shared
     def ensure_fresh_token(self, margin_minutes: int = 5, force: bool = False):

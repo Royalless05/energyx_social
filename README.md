@@ -1,14 +1,15 @@
-# EnergyX Social
+# SocialX
 
 **Multi-channel social media publishing for EnergyX 369 ERP.**
 
-EnergyX Social (module name: *Social Posting*) lets a team draft, approve, schedule and publish posts to **Instagram, Facebook Pages, YouTube and TikTok** directly from EnergyX 369 ERP, using each platform's official API. There is no third-party SaaS in between: tokens stay in your own database, encrypted.
+SocialX (module name: *Social Posting*, package name: `energyx_social`) lets a team draft, approve, schedule and publish posts to **Instagram, Facebook Pages, YouTube, TikTok and LinkedIn** directly from EnergyX 369 ERP, using each platform's official API. There is no third-party SaaS in between: tokens stay in your own database, encrypted.
 
 ---
 
 ## Table of contents
 
 - [Features](#features)
+- [What's new in this release](#whats-new-in-this-release)
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Quick start](#quick-start)
@@ -18,11 +19,14 @@ EnergyX Social (module name: *Social Posting*) lets a team draft, approve, sched
   - [Facebook Page](#facebook-page)
   - [YouTube](#youtube)
   - [TikTok](#tiktok)
+  - [LinkedIn](#linkedin)
 - [Media rules](#media-rules)
+- [Wave 2 and 3 features in detail](#wave-2-and-3-features-in-detail)
 - [Scheduling and background jobs](#scheduling-and-background-jobs)
 - [Security](#security)
 - [Platform limits to know about](#platform-limits-to-know-about)
 - [Troubleshooting](#troubleshooting)
+- [Roadmap](#roadmap)
 - [Project structure](#project-structure)
 - [License](#license)
 
@@ -39,13 +43,27 @@ EnergyX Social (module name: *Social Posting*) lets a team draft, approve, sched
 - **Analytics.** Daily pull of impressions, reach, likes, comments, shares and engagement rate into the post.
 - **Token renewal.** Tokens close to expiry are renewed daily. System Managers are notified if renewal fails.
 - **Permission aware.** Editors never see credentials. Only System Managers can open the settings.
+- **Notifications.** Editors and managers are told when a post needs approval, is approved or rejected, publishes, or fails.
+- **Content calendar.** See the scheduled queue on a calendar.
+- **Hashtag templates.** Reusable hashtag sets per account or channel, inserted into the caption in one click.
+- **Post preview.** An approximate per-platform mock-up on the post form before you approve.
+- **Metrics history.** A wider daily pull plus weekly roll-ups that keep history over time.
+- **Carousel and albums.** Instagram carousels and Facebook multi-photo albums (2-10 items).
+- **Analytics report.** Engagement per post, account, channel, week, hour and weekday, with charts.
+- **Media library.** Shared, tagged assets reusable across posts.
+- **Multi-level approval and revision notes.** Optional second approval level and structured notes on every rejection.
+- **Comment inbox.** Pull and answer comments from Facebook, Instagram and YouTube.
+- **LinkedIn.** Text, image and video posts to a profile or an organization page.
+- **Bulk scheduling and recurring posts.** CSV/XLSX import and evergreen templates that always go through approval.
+- **UTM builder and short links.** Automatic UTM tags per channel and click-counting short links.
 
 | Channel | Formats |
 |---|---|
-| Instagram | Post, Reel, Story |
-| Facebook Page | Photo, Video, Text |
+| Instagram | Post, Reel, Story, Carousel |
+| Facebook Page | Photo, Video, Text, Album |
 | YouTube | Short, Video (with thumbnail and playlist support) |
 | TikTok | Video, Photo |
+| LinkedIn | Text, Photo, Video |
 
 ## Requirements
 
@@ -71,7 +89,7 @@ On install and on every migrate the app idempotently creates:
 - the roles **Social Editor** and **Social Manager**
 - the workflow **Social Post Approval** and its states and actions (existing ones are never overwritten)
 
-An **EnergyX Social** icon then appears on the Desk Apps screen, with shortcuts to *Social Post* and *Social Posting Settings*.
+A **SocialX** icon then appears on the Desk Apps screen, with shortcuts to *Social Post*, *Content Calendar*, *Hashtag Templates* and *Social Posting Settings*.
 
 If the icon does not appear after install, run:
 
@@ -91,6 +109,47 @@ bench build --app energyx_social
 bench restart
 ```
 
+## What's new in this release
+
+This release delivers the **whole roadmap**: Wave 1 (items 1-5), Wave 2 (items 6-9) and Wave 3 (items 10-13). Waves 2 and 3 are described in [Wave 2 and 3 features in detail](#wave-2-and-3-features-in-detail). Existing behaviour (publishing, workflow, retries, token renewal) keeps working; the only change to an existing flow is the optional second approval level, which is **off** by default.
+
+### 1. Notifications
+
+In-app notifications (Notification Log). Email is sent according to each user's own Notification Settings.
+
+| Event | Who is notified |
+|---|---|
+| Post submitted for approval | All users with the **Social Manager** role |
+| Approved, rejected (returned to Draft), put on hold, cancelled | The user who requested the post |
+| Published on all channels, or only some (Partial) | The user who requested the post |
+| A channel fails permanently (retries exhausted or a non-retryable error) | The requester and all Social Managers |
+| Level-1 approval with *Require Final Approval* on | All Social Final Approvers (and the requester is told it passed level 1) |
+| Final approval, or a rejection with revision notes | The requester (the rejection lists the open notes) |
+
+You are never notified about your own actions. Notifications never block saving or publishing.
+
+### 2. Content calendar
+
+Open **SocialX → Content Calendar** (or the *Calendar* view of the Social Post list). Posts appear on their **Default Scheduled At** date and are coloured by status. Posts that only use per-channel schedule overrides and have no default schedule are not shown on the calendar.
+
+### 3. Hashtag templates
+
+- Create templates under **SocialX → Hashtag Templates**: a name, optionally a channel and an account, and the hashtags (separated by spaces, commas or new lines). The `#` is added automatically and duplicates are removed.
+- Mark one template as **Default** for an account (or a channel) and it is picked automatically when you choose that account on a Social Post channel row.
+- On a channel row, choose a **Hashtag Template**. Its hashtags are appended to the *Caption Override* (starting from the base caption if the override is empty). You can edit the result afterwards; the same hashtags are never added twice.
+
+Templates are standalone records rather than a table inside the account, because the account list is itself a child table of the settings page.
+
+### 4. Wider metrics retention
+
+- **Social Posting Settings → Metrics** now has *Metrics Window (days)* (default 90, was a fixed 30) and *Metrics Max Posts per Run* (default 1,000, was a fixed 500).
+- Each daily run also writes **Social Metric Weekly**: one row per channel per week (weeks start on Monday) holding the latest numbers of that week. Platform metrics are cumulative, so the last snapshot of a week is that week's final value.
+- Nothing is deleted. Daily rows stay in the post's Metrics table; weekly rows stay in *Social Metric Weekly* (read-only for editors and managers).
+
+### 5. Post preview
+
+The **Preview** section on the Social Post form shows one tab per active channel with an approximate mock-up of Instagram (post, reel, story), Facebook, YouTube (video, short) and TikTok. It uses the effective caption and media (override first, then base), applies each platform's approximate "…more" cut-off, shows the first comment and the character count against the platform limit, and highlights hashtags. It is rendered in the browser and updates as you type. Real platforms render slightly differently, so treat it as a guide.
+
 ## Quick start
 
 1. **Add accounts.** Open *Social Posting Settings* (System Manager only), add one row per account (see [Connecting your social accounts](#connecting-your-social-accounts)), **save**, then click **Test Connection** on each row. An account becomes `Enabled` only after Test Connection succeeds.
@@ -105,7 +164,8 @@ bench restart
 |---|---|
 | **System Manager** | Edit Social Posting Settings, run Test Connection, everything below |
 | **Social Manager** | Approve / reject, hold / resume, cancel / reopen, Publish Now, Retry Failed, Remove from Platform |
-| **Social Editor** | Create and edit drafts, submit for approval |
+| **Social Final Approver** | Second approval level (only when *Require Final Approval* is on): Final Approve or Request Revision |
+| **Social Editor** | Create and edit drafts, submit for approval, resolve revision notes, reply in the comment inbox |
 
 Give managers **both** the Social Editor and Social Manager roles so they can draft and approve.
 
@@ -113,6 +173,13 @@ Give managers **both** the Social Editor and Social Manager roles so they can dr
 Draft ──Submit for Approval──▶ Pending Approval ──Approve──▶ Approved ──▶ Publishing ──▶ Published / Partial
   ▲                                   │                         │
   └──────────── Reject ───────────────┘                    Hold ⇄ Resume
+```
+
+With **Social Posting Settings → Require Final Approval** switched on, the flow gets a second level (see [Multi-level approval](#9-multi-level-approval-and-revision-notes)):
+
+```
+Pending Approval ──Approve──▶ Pending Final Approval ──Final Approve──▶ Approved
+                                        └──Request Revision──▶ Draft
 ```
 
 Content (title, media, caption) is locked after approval. To change it, send the post back to Draft.
@@ -285,6 +352,21 @@ Access tokens are refreshed automatically, and the rotated refresh token is save
 - **Unaudited TikTok apps can only post privately** (`SELF_ONLY`) and only to private accounts. Submit your app for TikTok's audit to lift this.
 - Content Posting API calls are limited to 6 requests per minute per user token, plus a daily post cap.
 
+### LinkedIn
+
+**Fields in Social Account:** *Account ID* = the full author URN (`urn:li:organization:<id>` for a company page, `urn:li:person:<id>` for a profile), *Access Token*, optionally *Client ID / Client Secret / Refresh Token*, and *API Version* (format `YYYYMM`, default `202610`).
+
+1. Create an app at [linkedin.com/developers](https://www.linkedin.com/developers/apps) and associate it with your company page.
+2. Request the products you need. To post as an **organization** you need *Community Management API* (scope `w_organization_social`, plus `r_organization_social` for metrics). To post as a **member** you need *Share on LinkedIn* (`w_member_social`) and *Sign In with LinkedIn using OpenID Connect* (`openid profile`).
+3. Run the OAuth 2.0 authorization-code flow to get an access token.
+4. The organization or member URN goes into *Account ID*. Click **Test Connection**.
+
+Limits and notes:
+- LinkedIn access tokens live about **60 days**. Refresh tokens are only issued to approved partner apps. Without one, SocialX cannot renew the token: the daily renewal job notifies System Managers and you create a new token by hand. Set *Token Expires On* so the warning appears in time.
+- LinkedIn versions its API monthly and retires old versions after about a year. If requests fail with a version error, set a current `YYYYMM` in *API Version*.
+- LinkedIn's text format treats `\ | { } @ [ ] ( ) < > * _ ~` as special characters. SocialX escapes them automatically and leaves `#` alone so hashtags stay active.
+- Not supported for LinkedIn in this release: first comment, comment inbox, multi-image posts.
+
 ## Media rules
 
 Media is validated before publishing. Local files are exposed to platforms through the **Public Base URL**. Private files are copied temporarily to `/files/` under a random name and deleted after publishing. External media URLs must be HTTPS and are checked against private/internal addresses.
@@ -302,18 +384,110 @@ Media is validated before publishing. Local files are exposed to platforms throu
 | YouTube Thumbnail | JPEG, PNG | 2 MB |
 | TikTok Video | MP4, MOV, WebM | 4 GB |
 | TikTok Photo | JPEG, WebP | 20 MB |
+| Instagram Carousel (2-10 items) | JPEG (8 MB) or MP4/MOV (100 MB) per item | per item |
+| Facebook Album (2-10 photos) | JPEG, PNG, GIF | 10 MB per photo |
+| LinkedIn Photo | JPEG, PNG, GIF | 10 MB |
+| LinkedIn Video | MP4 | 200 MB |
 
 These are conservative defaults defined in `services/media.py` (`RULES`). Platforms change limits often, so verify against their current documentation and adjust if needed.
 
-Caption limits: Instagram and TikTok 2,200 characters, YouTube 5,000, Facebook 63,206. YouTube titles are limited to 100 characters.
+Caption limits: Instagram and TikTok 2,200 characters, YouTube 5,000, LinkedIn 3,000, Facebook 63,206. YouTube titles are limited to 100 characters.
+
+## Wave 2 and 3 features in detail
+
+### 6. Carousel and albums
+
+- On a channel row choose format **Carousel** (Instagram) or **Album** (Facebook Page).
+- Fill the **Carousel / Album Media** table on the post with 2-10 images (Instagram also accepts videos). The order of the rows is the order of the slides. Each row can be uploaded or picked from the [media library](#8-media-library).
+- The table is shared by all carousel/album channels of the post. Captions, schedule and first comment work as for other formats.
+- Instagram creates one container per slide, waits until all are ready, then publishes the carousel. Facebook uploads each photo unpublished and then makes one post that attaches them all. Progress is checkpointed after every item, so a retry resumes instead of uploading again.
+- The preview shows the first slide and the slide count.
+
+### 7. Analytics report
+
+Open **SocialX → Social Analytics** (a script report). Filters: date range (by publish date), channel, account, and **View**:
+
+| View | Shows |
+|---|---|
+| Post | Every published channel row with its latest numbers, best engagement first |
+| Account / Channel | Totals and engagement rate per account or channel |
+| Week | Trend by publishing week (line chart) |
+| Hour of Day / Weekday | When posts perform best; the summary names the best slot and how many posts it is based on |
+
+The numbers are the latest daily snapshot of each post (platform metrics are cumulative). Engagement rate = (likes + comments + shares) / reach, falling back to impressions when reach is unavailable. Treat the "best hour" with care when a slot has only a few posts. Hours are in the server's time zone.
+
+### 8. Media library
+
+**SocialX → Media Library** stores *Social Media Asset* records: file, name, tags, campaign and description. Type, MIME and size are filled automatically; only images and videos are accepted. The asset form shows a preview and which posts use the file.
+
+On a post, the base media, a channel's media override and each carousel slide have a **Media Library Asset** field: picking an asset copies its file into the matching attachment field. Changing the asset later does not overwrite a file you uploaded manually. The roadmap also mentioned alt text and a compatible-channels field; these are **not** included (the description field can hold alt text). Compatibility is checked when the post is published, using the media rules above.
+
+### 9. Multi-level approval and revision notes
+
+**Second approval level** (off by default): switch on *Social Posting Settings → Require Final Approval*, then give the final reviewers the **Social Final Approver** role. A Social Manager's *Approve* then moves the post to **Pending Final Approval**; a Final Approver completes it with **Final Approve** or sends it back with **Request Revision**. The setting is read when the post is submitted, so posts already in review keep the rules they started with. Approver names and times are stored for both levels. The server enforces the rules, not just the buttons.
+
+**Revision notes** (always on): the *Revision Notes* table on the post. Reviewers add one note per issue (type, applies-to channel, text). Rules:
+- Rejecting, or *Request Revision*, needs at least one **Open** note.
+- The editor sees the notes, answers in *Resolution* and sets them to **Resolved**. Editors cannot add, edit or delete notes.
+- *Submit for Approval* is blocked while any note is Open, and approving is blocked while a note is Open.
+- Each note records who raised it, at which level and when, and who resolved it and when. The notification to the editor lists the open notes.
+
+Existing installs: on `bench migrate` the existing *Social Post Approval* workflow is **extended in place** (new state, new transitions and the two conditions). Nothing you customized is overwritten; transitions that already exist are left alone.
+
+### 10. Comment inbox
+
+**SocialX → Comment Inbox** lists comments as *Social Comment* records (New / Replied / Ignored). An hourly job pulls comments for recently published posts; **Actions → Pull Comments** on a post does it on demand. Open a comment and click **Reply** to answer through the platform's API, or **Ignore**.
+
+| Channel | Read | Reply | Notes |
+|---|---|---|---|
+| Facebook Page | yes | yes | needs `pages_read_engagement`, `pages_manage_engagement` |
+| Instagram | yes | yes | needs `instagram_manage_comments` |
+| YouTube | yes | yes | needs scope `https://www.googleapis.com/auth/youtube.force-ssl` in addition to the upload scope. A reply costs 50 quota units |
+| TikTok, LinkedIn | no | no | no suitable API in this app |
+
+Replies always go to the top-level comment (the platforms only nest one level). Comments written by your own account are skipped. Only the latest 50 comments per post are read per run. Direct messages are not included.
+
+### 11. LinkedIn
+
+See [LinkedIn](#linkedin) for setup. Formats: Text, Photo, Video. Posting, deleting and basic metrics (likes, comments) are supported.
+
+### 12. Bulk scheduling and recurring posts
+
+**Bulk import.** On the Social Post list click **Bulk Schedule (CSV)**, download the template, fill it and upload a `.csv` (UTF-8, `,` or `;`) or `.xlsx` file (up to 200 rows). **Validate** checks everything without saving; **Create Drafts** creates one Draft per valid row and reports the rows with errors. Drafts then go through normal approval (use the list view's bulk *Apply Workflow* to submit many at once).
+
+| Column | Meaning |
+|---|---|
+| `title` | required |
+| `caption`, `hashtags` | caption text; hashtags are normalized and appended |
+| `media` | an `https://` URL or a `/files/...` path |
+| `channels` | required; separated by `;`, each `Channel` or `Channel:Account Name` (the account name is needed when a channel has several enabled accounts) |
+| `formats` | optional, `Channel=Format` separated by `;` (default: the channel's first format, or Text when there is no media) |
+| `scheduled_at` | optional `YYYY-MM-DD HH:MM`, must be in the future |
+| `campaign` | optional existing Campaign |
+
+**Recurring posts.** **SocialX → Recurring Posts**: a template (title, caption, media, channels) plus a schedule (daily, weekly on a weekday, or monthly on day 1-28, at a time, optional start/end date). An hourly job creates the post *Create Days Before* days ahead (default 3) with **Pending Approval** (or Draft), so a human always approves before anything is published. The next publish time is shown on the template; missed occurrences (for example scheduler downtime) are skipped, never back-posted. Titles get the date appended. Carousel/Album formats are not supported in recurring templates.
+
+**Throughput.** *Social Posting Settings → Dispatch Batch Limit* (default 25, was 10, max 200) controls how many due channels are enqueued every 5 minutes. Make sure enough `long` workers run for the volume you schedule.
+
+### 13. UTM builder and short links
+
+Each post has a **Link Tracking** section: *Default*, *None*, *UTM only* or *UTM + Short link* (the default comes from *Social Posting Settings → Default Link Tracking*, initially *None*, so existing behaviour does not change).
+
+- The rewrite happens **when publishing**; your draft stays readable. It applies to the caption and the first comment.
+- UTM parameters added when missing: `utm_source` (the channel, e.g. `instagram`), `utm_medium=social`, `utm_campaign` (the post's *UTM Campaign*, else its Campaign, else the title) and `utm_content` (the format). UTM parameters you typed yourself are never overwritten.
+- With *UTM + Short link*, each URL becomes `<Public Base URL>/s/<code>`. Opening it records a click and redirects (HTTP 302) to the tagged URL. Retries reuse the same code. You can also create links by hand in **SocialX → Short Links** (custom code, expiry date, enable/disable). Disabled or expired codes return 404.
+- **Actions → Link Clicks** on a post shows its links and click counts. Clicks include bots and link-preview fetchers, so treat the counts as an upper bound.
+- Short links are public by design; the target URL is visible to anyone who follows the link.
 
 ## Scheduling and background jobs
 
 | Job | Schedule | What it does |
 |---|---|---|
-| `dispatch_due_posts` | every 5 minutes | Claims up to 10 due channels and enqueues them on the `long` queue (timeout 1,200 s). Recovers jobs stuck in `Publishing` for over 30 minutes. |
+| `dispatch_due_posts` | every 5 minutes | Claims up to *Dispatch Batch Limit* due channels (default 25, max 200; was a fixed 10) and enqueues them on the `long` queue (timeout 1,200 s). Recovers jobs stuck in `Publishing` for over 30 minutes. |
 | `renew_tokens` | daily | Renews tokens that expire within 10 days. Notifies System Managers on failure. |
-| `pull_metrics` | daily | Pulls metrics for posts published in the last 30 days into the *Metrics* table. |
+| `create_recurring_posts` | hourly | Creates posts for [recurring templates](#12-bulk-scheduling-and-recurring-posts) that enter their lead-time window. |
+| `pull_comments` | hourly | Pulls new comments for posts published within the last *Comments Window* days (default 14). Switch off with *Pull Comments Hourly*. |
+| `pull_metrics` | daily | Pulls metrics for posts published within the configured window (default 90 days, up to 1,000 channel rows) into the post's *Metrics* table, and writes a weekly roll-up to *Social Metric Weekly*. |
 
 The scheduler and a worker for the `long` queue must be running, otherwise nothing publishes automatically. Enable the scheduler with:
 
@@ -336,7 +510,8 @@ Errors are written to the **Error Log** doctype and to the `Error Log` field of 
 - **Instagram:** Development mode apps only publish to accounts connected to the app. Stories need a Business account. Instagram has no delete API, so remove posts manually.
 - **TikTok:** unaudited apps are limited to private posting; there is no delete API.
 - **YouTube:** daily quota of about 6 uploads by default; unaudited API projects upload as private.
-- **Facebook / YouTube:** *Remove from Platform* is supported.
+- **Facebook / YouTube / LinkedIn:** *Remove from Platform* is supported.
+- **Comments:** TikTok and LinkedIn comments are not available through the APIs this app uses. YouTube replies need the `youtube.force-ssl` scope (see below) and cost 50 quota units each.
 
 ## Troubleshooting
 
@@ -353,25 +528,94 @@ Errors are written to the **Error Log** doctype and to the `Error Log` field of 
 | TikTok "Unaudited clients can only post to a private account" | App is not audited. Use a private account and `SELF_ONLY`, or pass the audit |
 | Scheduled posts never publish | Scheduler disabled or no `long` worker running |
 | App icon missing on Desk | `bench migrate`, `bench --site <site> clear-cache`, hard refresh the browser |
+| Desk still shows the old name "EnergyX Social" after updating | Run `bench migrate` and clear the cache. The old workspace is removed on migrate and the new **SocialX** workspace is created. If a sidebar or desktop icon label is cached, edit it in Desk or re-run the desktop-icon command for your version |
+| No notification emails | Notifications are always created in-app. Email also needs outgoing email configured and email notifications enabled in the user's Notification Settings |
+| Post missing from the calendar | The calendar uses *Default Scheduled At*; set it on the post |
+| LinkedIn `426` / version error | The `LinkedIn-Version` is too old. Put a current `YYYYMM` in the account's *API Version* |
+| YouTube comments fail with 403 | The refresh token was created without `https://www.googleapis.com/auth/youtube.force-ssl`. Re-authorize with that scope added |
+| Instagram/Facebook comments fail with permission errors | Add `instagram_manage_comments` / `pages_read_engagement` + `pages_manage_engagement`, then get a new token |
+| Approve does nothing / wrong next state | Check *Workflow → Social Post Approval*: the two *Approve* transitions out of *Pending Approval* use the conditions `not doc.needs_final_approval` and `doc.needs_final_approval` |
+| Short link returns 404 | The code is disabled or expired, or the site was not restarted/migrated after the update (the `/s/<code>` route is registered in `hooks.py`) |
+| Bulk import says "tidak ada akun ... yang aktif" | The account must be *Enabled* (Test Connection passed). With several accounts on one channel write `Channel:Account Name` |
+| Preview shows "No media" | Attach a file in *Base Media* or *Media Override* on the channel row
+
+## Roadmap
+
+Source: *Roadmap Prioritas SocialX*, 20 November 2026. Effort and impact are the planning estimates from that document. All 13 items are implemented. The three platform audits are not code and still need to be submitted by you.
+
+> **Start now, in parallel with development: the platform audits.** Reviews on the platform side take weeks, and until they pass every feature stays in testing mode: (1) TikTok audit so posts can be public; (2) YouTube API audit/verification so uploads are not private and the quota can be raised; (3) Meta App Review / Advanced Access so you can post for client accounts and not only your own.
+
+### Wave 1 — Quick wins (1-2 weeks) · **delivered**
+
+| # | Feature | Effort | Impact | Status |
+|---|---|---|---|---|
+| 1 | Editor notifications | Small | High | ✅ Done |
+| 2 | Calendar view of the schedule | Small | High | ✅ Done |
+| 3 | Hashtag templates per account | Small | Medium | ✅ Done |
+| 4 | Wider metrics retention + weekly roll-ups | Small | Medium | ✅ Done |
+| 5 | Post preview per platform | Medium | High | ✅ Done |
+
+### Wave 2 — Content and insight boosters (1-2 months) · **delivered in this release**
+
+| # | Feature | Detail | Effort | Impact | Status |
+|---|---|---|---|---|---|
+| 6 | Carousel / multi-media album | Media becomes a child table (several files per channel row). Instagram supports up to 10 items; Facebook supports multi-photo albums. Carousel is the best-performing Instagram format. | Medium | High | ✅ Done |
+| 7 | Analytics dashboard | Report and charts from Social Post Metric: engagement trend per account/channel, post comparison, best posting hours. The data is already collected; this adds the presentation layer. | Medium | High | ✅ Done |
+| 8 | Media library | A shared *Social Media Asset* record reusable across posts and teams, with alt text, size and compatible channels. | Medium | Medium | ✅ Done |
+| 9 | Multi-level approval | Several approval levels plus structured revision notes (today a rejection just returns the post to Draft without context). | Medium | Medium | ✅ Done |
+
+### Wave 3 — Scale and interaction (next quarter) · **delivered in this release**
+
+| # | Feature | Detail | Effort | Impact | Status |
+|---|---|---|---|---|---|
+| 10 | Comment inbox | Read and reply to comments: Facebook, Instagram and YouTube through the official APIs; TikTok read-only. Direct messages in a later phase. (Implemented for Facebook, Instagram and YouTube; TikTok comments are not available through the APIs used here.) New channels are the heaviest work, so start with Facebook and Instagram because their APIs are the most complete. | Large | High | ✅ Done |
+| 11 | New platform: LinkedIn first | The most relevant audience for B2B. The provider pattern already exists, so only the implementation is needed. X and Threads follow. | Large | Medium | ✅ Done |
+| 12 | Bulk scheduling + recurring posts | CSV import of many posts at once and evergreen templates that republish automatically. The dispatch limit is now configurable (default 25 per 5 minutes) for this reason. | Medium | Medium | ✅ Done |
+| 13 | Link shortener + UTM builder | Automatic UTM parameters per channel and short links to track content performance from clicks. | Medium | Medium | ✅ Done |
+
+### Out of the roadmap (API limitations, not technical choices)
+
+- **Remove from Platform for Instagram and TikTok.** Neither platform offers an API to delete posts. This is documented as an official limitation; delete these posts manually in the app.
+- **Instagram Stories via API** are already supported (Business accounts), so no extra work is needed.
+
+### Suggested focus
+
+| Question | Short answer |
+|---|---|
+| What to do now? | Submit the 3 platform audits (TikTok, YouTube, Meta) — they are the only roadmap items that are not code, and every platform feature stays in testing mode until they pass. |
+| What raises the product's selling value fastest? | Carousel (item 6) and the analytics dashboard (item 7): the two features prospects will look at in a demo. |
+| What can wait? | X and Threads, and direct messages in the inbox. |
+| Biggest risk | The platform audit path is slow and outside our control, so submit it at the start, not after development is finished. |
 
 ## Project structure
 
 ```
 energyx_social/
-  hooks.py  jobs.py  api.py
+  hooks.py  jobs.py  api.py  notifications.py
+  www/s.py                         # public short-link redirect (/s/<code>)
   setup/install.py                 # roles + workflow
   public/images/logo.svg           # app icon
   services/
-    client.py  media.py  credentials.py  errors.py  publisher.py
-    providers/{meta,youtube,tiktok}.py
+    client.py  media.py  credentials.py  errors.py  publisher.py  hashtags.py
+    comments.py  links.py  bulk.py  recurring.py  library.py
+    providers/{meta,youtube,tiktok,linkedin}.py
   social_posting/
-    workspace/energyx_social/      # Desk workspace
+    workspace/socialx/             # Desk workspace (SocialX)
     doctype/
       social_posting_settings/     # single doctype: accounts, base URL, TikTok options
       social_account/              # child table: credentials per account
-      social_post/                 # the post, with workflow
+      social_post/                 # the post, with workflow, preview and calendar view
       social_post_channel/         # child table: one row per target channel
-      social_post_metric/          # child table: analytics
+      social_post_metric/          # child table: daily analytics
+      social_metric_weekly/        # weekly metric roll-ups
+      social_hashtag_template/     # reusable hashtag sets
+      social_post_media/           # child table: carousel / album slides
+      social_revision_note/        # child table: structured revision notes
+      social_media_asset/          # media library
+      social_comment/              # comment inbox
+      social_recurring_post/  social_recurring_channel/   # recurring templates
+      social_short_link/           # short links + click counter
+    report/social_analytics/       # analytics script report
 ```
 
 ## License
@@ -380,4 +624,4 @@ MIT. See the license declared in `hooks.py`.
 
 ---
 
-Built by **EnergyX 369**.
+SocialX is built by **EnergyX 369**.

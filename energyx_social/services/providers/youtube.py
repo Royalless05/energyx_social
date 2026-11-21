@@ -183,3 +183,37 @@ class YouTubeProvider(BaseProvider):
         # YouTube tidak mengekspos reach/shares lewat Data API; viewCount dipakai sebagai impressions.
         return {"impressions": int(s.get("viewCount", 0)), "likes": int(s.get("likeCount", 0)),
                 "comments": int(s.get("commentCount", 0))}
+
+    # ------------------------------------------------------------------ comments (scope youtube.force-ssl)
+    def fetch_comments(self, remote_id, post_format):
+        self.ensure_fresh_token()
+        data = parse_json(self.client.request(
+            "GET", f"{API}/youtube/v3/commentThreads",
+            params={"part": "snippet,replies", "videoId": remote_id, "maxResults": 50, "order": "time",
+                    "textFormat": "plainText"}, headers=self._headers()))
+        out = []
+        own = self.account.account_id
+
+        def add(item, parent):
+            sn = item.get("snippet") or {}
+            author_id = (sn.get("authorChannelId") or {}).get("value", "")
+            if own and author_id == own:
+                return
+            out.append({"id": item["id"], "text": sn.get("textDisplay") or sn.get("textOriginal", ""),
+                        "author": sn.get("authorDisplayName", ""), "author_id": author_id,
+                        "created": sn.get("publishedAt"), "parent_id": parent})
+
+        for thread in data.get("items") or []:
+            top = (thread.get("snippet") or {}).get("topLevelComment") or {}
+            if top.get("id"):
+                add(top, None)
+                for reply in (thread.get("replies") or {}).get("comments") or []:
+                    add(reply, top["id"])
+        return out
+
+    def reply_comment(self, remote_id, comment_id, text):
+        self.ensure_fresh_token()
+        data = parse_json(self.client.request(
+            "POST", f"{API}/youtube/v3/comments", params={"part": "snippet"},
+            json={"snippet": {"parentId": comment_id, "textOriginal": text}}, headers=self._headers()))
+        return str(data.get("id", ""))

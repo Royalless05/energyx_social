@@ -31,6 +31,14 @@ RULES = {
     ("YouTube", "Thumbnail"): {"kinds": {"image"}, "mimes": {"image/jpeg", "image/png"}, "max_mb": 2},
     ("TikTok", "Video"): {"kinds": {"video"}, "mimes": VIDEO | {"video/webm"}, "max_mb": 4096},
     ("TikTok", "Photo"): {"kinds": {"image"}, "mimes": {"image/jpeg", "image/webp"}, "max_mb": 20},
+    # Carousel / album: aturan berlaku per item; min_items/max_items menandai format multi-media.
+    ("Instagram", "Carousel"): {"kinds": {"image", "video"}, "mimes": {"image/jpeg"} | VIDEO, "max_mb": 100,
+                                "kind_max_mb": {"image": 8}, "min_items": 2, "max_items": 10},
+    ("Facebook Page", "Album"): {"kinds": {"image"}, "mimes": {"image/jpeg", "image/png", "image/gif"}, "max_mb": 10,
+                                 "min_items": 2, "max_items": 10},
+    ("LinkedIn", "Text"): {"kinds": set(), "mimes": set(), "max_mb": 0},
+    ("LinkedIn", "Photo"): {"kinds": {"image"}, "mimes": {"image/jpeg", "image/png", "image/gif"}, "max_mb": 10},
+    ("LinkedIn", "Video"): {"kinds": {"video"}, "mimes": {"video/mp4"}, "max_mb": 200},
 }
 
 
@@ -67,6 +75,14 @@ def _assert_public_host(url: str):
 
 def requires_media(channel: str, post_format: str) -> bool:
     return bool(RULES.get((channel, post_format), {}).get("kinds"))
+
+
+def multi_limits(channel: str, post_format: str):
+    """(min_items, max_items) untuk format carousel/album, None untuk format satu-media."""
+    rule = RULES.get((channel, post_format)) or {}
+    if rule.get("max_items"):
+        return rule.get("min_items", 2), rule["max_items"]
+    return None
 
 
 class MediaService:
@@ -137,8 +153,9 @@ class MediaService:
         if info.mime not in rule["mimes"]:
             raise MediaError(f"Format {info.mime} tidak didukung untuk {channel} {post_format} "
                              f"(boleh: {', '.join(sorted(rule['mimes']))}).")
-        if info.size and info.size > rule["max_mb"] * MB:
-            raise MediaError(f"Ukuran {info.size / MB:.1f} MB melebihi batas {rule['max_mb']} MB untuk {channel} {post_format}.")
+        limit_mb = rule.get("kind_max_mb", {}).get(info.kind, rule["max_mb"])
+        if info.size and info.size > limit_mb * MB:
+            raise MediaError(f"Ukuran {info.size / MB:.1f} MB melebihi batas {limit_mb} MB untuk {channel} {post_format} ({info.kind}).")
         if not info.size:
             raise MediaError("File media kosong.")
 

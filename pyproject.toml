@@ -5,7 +5,7 @@ build-backend = "flit_core.buildapi"
 [project]
 name = "energyx_social"
 authors = [{ name = "EnergyX 369", email = "dev@example.com" }]
-description = "Social Posting module (IG, FB Page, YouTube, TikTok) for EnergyX 369 ERP on Frappe/ERPNext v16"
+description = "SocialX: multi-channel social media publishing (Instagram, Facebook Page, YouTube, TikTok) for EnergyX 369 ERP v16"
 requires-python = ">=3.10"
 readme = "README.md"
 dynamic = ["version"]

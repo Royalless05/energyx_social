@@ -1,0 +1,135 @@
+{
+ "doctype": "DocType",
+ "name": "Social Media Asset",
+ "module": "Social Posting",
+ "owner": "Administrator",
+ "creation": "2026-11-21 13:00:00.000000",
+ "modified": "2026-11-21 13:00:00.000000",
+ "modified_by": "Administrator",
+ "engine": "InnoDB",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "field_order": [
+  "asset_name",
+  "file",
+  "media_type",
+  "col_1",
+  "campaign",
+  "tags",
+  "sec_info",
+  "mime_type",
+  "file_size_kb",
+  "col_2",
+  "description",
+  "usage_html"
+ ],
+ "fields": [
+  {
+   "fieldname": "asset_name",
+   "fieldtype": "Data",
+   "label": "Asset Name",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "file",
+   "fieldtype": "Attach",
+   "label": "File",
+   "reqd": 1
+  },
+  {
+   "fieldname": "media_type",
+   "fieldtype": "Select",
+   "label": "Type",
+   "options": "Image\nVideo",
+   "read_only": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "col_1",
+   "fieldtype": "Column Break",
+   "label": " "
+  },
+  {
+   "fieldname": "campaign",
+   "fieldtype": "Link",
+   "label": "Campaign",
+   "options": "Campaign",
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "tags",
+   "fieldtype": "Small Text",
+   "label": "Tags",
+   "description": "Pisahkan dengan koma, mis. promo, produk, ramadan",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "sec_info",
+   "fieldtype": "Section Break",
+   "label": "File Info"
+  },
+  {
+   "fieldname": "mime_type",
+   "fieldtype": "Data",
+   "label": "MIME Type",
+   "read_only": 1
+  },
+  {
+   "fieldname": "file_size_kb",
+   "fieldtype": "Int",
+   "label": "Size (KB)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "col_2",
+   "fieldtype": "Column Break",
+   "label": " "
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  },
+  {
+   "fieldname": "usage_html",
+   "fieldtype": "HTML",
+   "label": "Usage"
+  }
+ ],
+ "permissions": [
+  {
+   "role": "Social Editor",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "report": 1
+  },
+  {
+   "role": "Social Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "report": 1,
+   "export": 1
+  },
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "report": 1,
+   "export": 1
+  }
+ ],
+ "track_changes": 1,
+ "autoname": "format:SMA-{#####}",
+ "naming_rule": "Expression",
+ "title_field": "asset_name",
+ "search_fields": "asset_name,tags,media_type",
+ "show_title_field_in_link": 1
+}
